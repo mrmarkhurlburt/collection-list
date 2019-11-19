@@ -11,9 +11,9 @@
         <a href="{% url 'learning_logs:topic' topic.id %}">{{ topic }}</a>
         </h2></li>
     {% empty %}
-        <li><h3>No topics have been added yet.</h3></li>
+        <li><h2>No topics have been added yet.</h2></li>
     {% endfor %}
   </ul>
 
-  <h1><a href="{% url 'learning_logs:new_topic' %}">Add new topic</a></h3>  
+  <h2><a href="{% url 'learning_logs:new_topic' %}">Add new topic</a></h2>  
 {% endblock content %}
