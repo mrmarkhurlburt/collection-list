@@ -1,0 +1,63 @@
+{% extends 'learning_logs/base.html' %}
+
+{% block page_header %}
+  <h3>{{ topic }}</h3>
+{% endblock page_header %}
+
+{% block content %}
+  <p>
+    <a href="{% url 'learning_logs:new_entry' topic.id %}">Add new entry</a>
+  </p>
+
+  <ul>
+  {% for entry in entries %}
+          
+    <div class="card mb-3">
+      <h4 class="card-header">
+        {{ entry.date_added|date:'M d, Y H:i' }}
+        <small><a href="{% url 'learning_logs:edit_entry' entry.id %}">
+           edit entry</a></small>
+           
+      </h4>
+         
+      <div class="card-body">
+         
+         
+              
+        <p id={{ entry.id }}></p>
+        <script>
+
+                // Turns url formatted text into links embeded in entries MAH 11/06/2019
+                
+        x = document.getElementsByClassName("card-body");   
+        document.getElementById({{ entry.id }}).innerHTML = myLinkTextFunction('{{ entry.text|linebreaks }}');
+            
+          function myLinkTextFunction(textIn) {
+              txt=''; // txt is global because didn't use var
+                      // replace any <p> or </p> tags with empty string ''
+              var temptextIn = textIn.replace('</p>', '');
+              textIn = temptextIn;
+              temptextIn = textIn.replace(/<p>/g, '');
+              textIn = temptextIn;
+                     // parse into an array[word], separated at spaces.
+              var inputText = textIn.split(' ');
+  
+              inputText.forEach(myFunction);
+          return txt;
+          }         // end of myLinkTextFunction
+
+        function myFunction(word) {
+         if (0==word.indexOf('http')){
+          txt = txt + ' ' + '<a href= "'+word+' '+'">'+word+'</a>';
+         } else {txt = txt + ' '+word;
+           }
+        }           // end of myFunction
+                        
+        </script>
+      </div>
+     </div>
+  {% empty %}
+    <p>There are no entries for this topic yet.</p>
+  {% endfor %}
+ 
+{% endblock content %}

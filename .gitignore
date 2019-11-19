@@ -1,0 +1,11 @@
+# git ignore file 11/18/2019 mah
+
+ll_env/
+__pycache__/
+*.sqlite3
+
+Command Prompt.lnk
+desktop.ini
+
+staticfiles
+
