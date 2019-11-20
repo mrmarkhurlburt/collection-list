@@ -24,8 +24,8 @@ SECRET_KEY = '*5qz4x2=@9xb+mi(xrla$b4)h8)e2l#9x+!u9pquah%e=jvw=+'
 
 # Local Settings 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-#DEBUG = False
+#DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = []
 
