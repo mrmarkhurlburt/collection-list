@@ -19,15 +19,12 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-#SECRET_KEY = '*5qz4x2=@9xb+mi(xrla$b4)h8)e2l#9x+!u9pquah%e=jvw=+'
-
 # Local Settings 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+#DEBUG = True
 #DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['.herokuapp.com','127.0.0.1','localhost']
 
 
 # Application definition
@@ -84,12 +81,12 @@ WSGI_APPLICATION = 'learning_log.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
-}
+#DATABASES = {
+#    'default': {
+#        'ENGINE': 'django.db.backends.sqlite3',
+#        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+#    }
+#}
 
 
 # Password validation
@@ -118,11 +115,8 @@ LANGUAGE_CODE = 'en-us'
 
 #TIME_ZONE = 'UTC'
 TIME_ZONE = 'America/Los_Angeles'
-
 USE_I18N = True
-
 USE_L10N = True
-
 USE_TZ = True
 
 
@@ -147,3 +141,18 @@ if os.environ.get('SECRET_KEY'):
     SECRET_KEY = os.environ.get('SECRET_KEY')
 else:
     SECRET_KEY = '*5qz4x2=@9xb+mi(xrla$b4)h8)e2l#9x+!u9pquah%e=jvw=+'
+
+
+    #setting for deployment 05/11/2021 mah to make local development copy work with postgresSQL
+# Heroku: Update database configuration from $DATABASE_URL.
+import dj_database_url
+
+if os.environ.get('DATABASE_URL'):
+    DATABASE_URL = os.environ.get('DATABASE_URL')
+else:
+    DATABASE_URL = 'postgres://postgres:postgres1234@localhost:5432/ll_db'
+DATABASES['default'] = dj_database_url.parse(DATABASE_URL, conn_max_age=600)
+
+# New to Django 3.2 WARNINGS:
+# You need to choose type of auto-created primary keys https://docs.djangoproject.com/en/3.2/releases/3.2/#customizing-type-of-auto-created-primary-keys (new in Django 3.2)
+DEFAULT_AUTO_FIELD='django.db.models.AutoField'
