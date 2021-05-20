@@ -20,9 +20,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # Local Settings 
-# SECURITY WARNING: don't run with debug turned on in production!
-#DEBUG = True
-#DEBUG = False
+
 
 ALLOWED_HOSTS = ['.herokuapp.com','127.0.0.1','localhost']
 
@@ -132,15 +130,17 @@ LOGIN_URL = 'users:login'
 import django_heroku
 django_heroku.settings(locals())
 
-if os.environ.get('DEBUG') == 'TRUE':
+if os.environ.get('DEBUG') == 'True':
     DEBUG = True
-elif os.environ.get('DEBUG') == 'FALSE':
+elif os.environ.get('DEBUG') == 'False':
     DEBUG = False
+
+
 # SECURITY WARNING: keep the secret key used in production secret!
 if os.environ.get('SECRET_KEY'):
     SECRET_KEY = os.environ.get('SECRET_KEY')
 else:
-    SECRET_KEY = '*5qz4x2=@9xb+mi(xrla$b4)h8)e2l#9x+!u9pquah%e=jvw=+'
+    SECRET_KEY = 'NOSECRETSHERE'
 
 
     #setting for deployment 05/11/2021 mah to make local development copy work with postgresSQL
