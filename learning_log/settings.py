@@ -77,16 +77,37 @@ WSGI_APPLICATION = 'learning_log.wsgi.application'
 
 
 # Database
-# https://docs.djangoproject.com/en/2.2/ref/settings/#databases
+# https://docs.djangoproject.com/en/3.2/ref/settings/#databases
+"""
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    }
+}
 
-#DATABASES = {
-#    'default': {
-#        'ENGINE': 'django.db.backends.sqlite3',
-#        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-#    }
-#}
 
+import dj_database_url
 
+DATABASES = {'default': dj_database_url.config(default='postgres://postgres:postgres1234@localhost:5432/ll_db')}
+
+import dj_database_url
+"""
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'll_db','USER': 'postgres','PASSWORD': 'postgres1234','HOST': '127.0.0.1','PORT': '5433',
+                #'OPTIONS': {'conn_max_age=600','ssl_require=False',}
+    }
+}
+
+#print(DATABASES)
+"""
+import dj_database_url
+
+DATABASES['default'] = dj_database_url.config(conn_max_age=600, ssl_require=False)
+
+"""
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
 
@@ -121,20 +142,18 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
-STATIC_URL = '/static/'
+#STATIC_URL = '/static/'
 
 # My settings
 LOGIN_URL = 'users:login'
 
-# Heroku settings.
-import django_heroku
-django_heroku.settings(locals())
+
+
 
 if os.environ.get('DEBUG') == 'True':
     DEBUG = True
 elif os.environ.get('DEBUG') == 'False':
     DEBUG = False
-
 
 # SECURITY WARNING: keep the secret key used in production secret!
 if os.environ.get('SECRET_KEY'):
@@ -145,13 +164,48 @@ else:
 
     #setting for deployment 05/11/2021 mah to make local development copy work with postgresSQL
 # Heroku: Update database configuration from $DATABASE_URL.
+# dj_database_url Permit disabling 'require_ssl' when running locally for development #10
+#import dj_database_url
+
+# override DATABASE_URL set by django_heroku because it forces SSL mode locally
+
+#ssl_require = os.environ['ENV'] != 'development'
+
+#locals()['DATABASES']['default'] = dj_database_url.config(conn_max_age=django_heroku.MAX_CONN_AGE, ssl_require=False)
+
+# Heroku settings.
+
 import dj_database_url
 
-if os.environ.get('DATABASE_URL'):
-    DATABASE_URL = os.environ.get('DATABASE_URL')
-else:
-    DATABASE_URL = 'postgres://postgres:postgres1234@localhost:5432/ll_db'
-DATABASES['default'] = dj_database_url.parse(DATABASE_URL, conn_max_age=600)
+import django_heroku
+
+if os.environ.get('DEVELOPMENT') != 'DEVELOPMENT':
+
+    django_heroku.settings(locals())
+
+    if os.environ.get('DATABASE_URL'):
+        DATABASE_URL = os.environ.get('DATABASE_URL')
+    else:
+        DATABASE_URL = 'postgres://postgres:postgres1234@localhost:5433/ll_db'
+                #this is the statement that let it work in Procfile.windows
+
+    #DATABASES = {}
+    DATABASES['default'] = dj_database_url.parse(DATABASE_URL, conn_max_age=600, ssl_require=False)
+
+
+    DATABASES = {'default': dj_database_url.config(default=DATABASE_URL)}
+
+# Static files (CSS, JavaScript, Images)
+# https://docs.djangoproject.com/en/2.1/howto/static-files/
+# The absolute path to the directory where collectstatic will collect static files for deployment.
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+# The URL to use when referring to static files (where they will be served from)
+STATIC_URL = '/static/'
+
+
+# Static file serving.
+# http://whitenoise.evans.io/en/stable/django.html#django-middleware
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # New to Django 3.2 WARNINGS:
 # You need to choose type of auto-created primary keys https://docs.djangoproject.com/en/3.2/releases/3.2/#customizing-type-of-auto-created-primary-keys (new in Django 3.2)
